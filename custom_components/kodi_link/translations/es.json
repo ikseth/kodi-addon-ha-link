@@ -1,0 +1,135 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kodi Link",
+        "description": "Qué entidades puede ver y accionar Kodi. Deja una etiqueta en blanco para crearla con su nombre por defecto («Kodi: ve» o «Kodi: actúa»). Después, añade cada Kodi desde la propia integración.",
+        "data": {
+          "etiqueta_ve": "Etiqueta: Kodi ve",
+          "etiqueta_actua": "Etiqueta: Kodi actúa"
+        },
+        "data_description": {
+          "etiqueta_ve": "Las entidades con esta etiqueta se ven, en solo lectura, en los Kodi con nivel «Ve» o «Actúa».",
+          "etiqueta_actua": "Las entidades con esta etiqueta también se ven, y los Kodi con nivel «Actúa» podrán accionarlas."
+        }
+      }
+    },
+    "error": {
+      "etiquetas_iguales": "Las dos etiquetas tienen que ser distintas."
+    },
+    "abort": {
+      "single_instance_allowed": "Ya está configurada."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kodi Link",
+        "data": {
+          "etiqueta_ve": "Etiqueta: Kodi ve",
+          "etiqueta_actua": "Etiqueta: Kodi actúa"
+        },
+        "data_description": {
+          "etiqueta_ve": "Las entidades con esta etiqueta se ven, en solo lectura, en los Kodi con nivel «Ve» o «Actúa».",
+          "etiqueta_actua": "Las entidades con esta etiqueta también se ven, y los Kodi con nivel «Actúa» podrán accionarlas."
+        }
+      }
+    },
+    "error": {
+      "etiquetas_iguales": "Las dos etiquetas tienen que ser distintas."
+    }
+  },
+  "config_subentries": {
+    "kodi": {
+      "initiate_flow": {
+        "user": "Añadir Kodi"
+      },
+      "entry_type": "Kodi",
+      "step": {
+        "user": {
+          "title": "Kodi",
+          "data": {
+            "kodi": "Kodi",
+            "nivel": "Nivel",
+            "vista": "Pantalla",
+            "tecla": "Tecla del panel durante la reproducción"
+          },
+          "data_description": {
+            "kodi": "Un reproductor de la integración Kodi. Ese Kodi necesita el addon service.ha_link.",
+            "nivel": "Nada: no recibe nada. Ve: muestra las entidades etiquetadas. Actúa: además puede accionar las de «Kodi: actúa».",
+            "vista": "Lo que se abre desde Programas → HA Link: tablero por áreas (A), filas por estancia (C) o el listado sencillo.",
+            "tecla": "Tecla del mando que muestra el panel lateral (B) sobre el vídeo. «Ninguna» lo desactiva."
+          }
+        },
+        "reconfigure": {
+          "title": "Kodi",
+          "data": {
+            "nivel": "Nivel",
+            "vista": "Pantalla",
+            "tecla": "Tecla del panel durante la reproducción"
+          },
+          "data_description": {
+            "nivel": "Nada: no recibe nada. Ve: muestra las entidades etiquetadas. Actúa: además puede accionar las de «Kodi: actúa».",
+            "vista": "Lo que se abre desde Programas → HA Link: tablero por áreas (A), filas por estancia (C) o el listado sencillo.",
+            "tecla": "Tecla del mando que muestra el panel lateral (B) sobre el vídeo. «Ninguna» lo desactiva."
+          }
+        }
+      },
+      "error": {
+        "ya_dado_de_alta": "Ese Kodi ya está dado de alta."
+      },
+      "abort": {
+        "reconfigure_successful": "Cambios guardados."
+      }
+    }
+  },
+  "selector": {
+    "nivel": {
+      "options": {
+        "nada": "Nada",
+        "ve": "Ve",
+        "actua": "Actúa"
+      }
+    },
+    "vista": {
+      "options": {
+        "tablero": "Tablero por áreas",
+        "filas": "Filas por estancia",
+        "listado": "Listado sencillo"
+      }
+    },
+    "tecla": {
+      "options": {
+        "ninguna": "Ninguna",
+        "roja": "Roja",
+        "verde": "Verde",
+        "amarilla": "Amarilla",
+        "azul": "Azul"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "expuestas": {
+        "name": "Entidades expuestas",
+        "state_attributes": {
+          "actuables": {
+            "name": "Accionables"
+          },
+          "areas": {
+            "name": "Áreas"
+          }
+        }
+      },
+      "enlace": {
+        "name": "Enlace",
+        "state": {
+          "desactivado": "Desactivado",
+          "desconectado": "Desconectado",
+          "sin_addon": "Conectado, sin addon",
+          "conectado": "Conectado"
+        }
+      }
+    }
+  }
+}

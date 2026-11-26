@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Casa (Home Assistant, evocado) -->
+  <path d="M256 40 L472 236 L428 236 L428 446 L84 446 L84 236 L40 236 Z"
+        fill="#18BCF2" stroke="#18BCF2" stroke-width="24" stroke-linejoin="round"/>
+  <!-- Pantalla (Kodi, evocado) -->
+  <rect x="132" y="214" width="248" height="164" rx="22" fill="#16324F"/>
+  <!-- Eslabones: el enlace -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round">
+    <rect x="166" y="272" width="104" height="48" rx="24"/>
+    <rect x="242" y="272" width="104" height="48" rx="24"/>
+  </g>
+</svg>

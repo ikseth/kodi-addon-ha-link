@@ -1,0 +1,18 @@
+{
+  "domain": "kodi_link",
+  "name": "Kodi Link",
+  "version": "0.2.0",
+  "documentation": "https://github.com/ikseth/kodi-addon-ha-link/blob/main/docs/diseno.md",
+  "issue_tracker": "https://github.com/ikseth/kodi-addon-ha-link/issues",
+  "codeowners": [
+    "@ikseth"
+  ],
+  "config_flow": true,
+  "single_config_entry": true,
+  "after_dependencies": [
+    "kodi"
+  ],
+  "integration_type": "hub",
+  "iot_class": "local_push",
+  "requirements": []
+}

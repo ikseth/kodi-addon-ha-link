@@ -1,0 +1,66 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-26T13:20:00Z"
+  },
+  "title": "HA Link: maquetas K2",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "title": "A · Tablero por áreas"
+    },
+    "Lateral.dc.html": {
+      "x": 1360,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "title": "B · Panel lateral sobre el vídeo"
+    },
+    "Filas.dc.html": {
+      "x": 0,
+      "y": 840,
+      "w": 1280,
+      "h": 720,
+      "title": "C · Filas por estancia"
+    },
+    "Lenguaje.dc.html": {
+      "x": 1360,
+      "y": 840,
+      "w": 1280,
+      "h": 720,
+      "title": "D · Lenguaje visual"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Lateral.dc.html",
+    "Filas.dc.html",
+    "Lenguaje.dc.html"
+  ],
+  "notes": {
+    "titulo": {
+      "x": 0,
+      "y": -300,
+      "text": "HA Link · ventana propia (K2), versión 2: icono primero",
+      "kind": "title1",
+      "maxW": 2640
+    },
+    "leyenda": {
+      "x": 2720,
+      "y": 0,
+      "w": 520,
+      "size": "m",
+      "fill": "blue",
+      "text": "Versión 2 (26/11): misma organización, otra estética. El estado lo dice el icono, no el texto.\n\nActivo: bloque ámbar macizo con halo e icono relleno. Reposo: gris con icono de contorno. Alerta: rojo con anillo que late. No disponible: apagado, con marca. Valores: aro con escala de color.\n\nIndicadores de área: miniaturas de lo encendido, punto rojo si hay alerta y termómetro coloreado, en lugar de «1 alerta · 2 activos».\n\nPantalla de TV a 1280×720, vista a 3 m. Datos de ejemplo.\n\nEn Kodi es nativo: iconos MDI blancos teñidos (colordiffuse), halos y aros como PNG precalculados, y el latido con una animación de la ventana."
+    }
+  },
+  "designSystems": []
+}

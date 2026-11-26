@@ -1,0 +1,135 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kodi Link",
+        "description": "Which entities Kodi can see and operate. Leave a label blank to create it with its default name («Kodi: ve» or «Kodi: actúa»). Then add each Kodi from the integration itself.",
+        "data": {
+          "etiqueta_ve": "Label: Kodi sees",
+          "etiqueta_actua": "Label: Kodi operates"
+        },
+        "data_description": {
+          "etiqueta_ve": "Entities with this label are shown, read only, on every Kodi with level «Sees» or «Operates».",
+          "etiqueta_actua": "Entities with this label are shown too, and Kodi devices with level «Operates» will be able to operate them."
+        }
+      }
+    },
+    "error": {
+      "etiquetas_iguales": "The two labels must be different."
+    },
+    "abort": {
+      "single_instance_allowed": "Already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kodi Link",
+        "data": {
+          "etiqueta_ve": "Label: Kodi sees",
+          "etiqueta_actua": "Label: Kodi operates"
+        },
+        "data_description": {
+          "etiqueta_ve": "Entities with this label are shown, read only, on every Kodi with level «Sees» or «Operates».",
+          "etiqueta_actua": "Entities with this label are shown too, and Kodi devices with level «Operates» will be able to operate them."
+        }
+      }
+    },
+    "error": {
+      "etiquetas_iguales": "The two labels must be different."
+    }
+  },
+  "config_subentries": {
+    "kodi": {
+      "initiate_flow": {
+        "user": "Add Kodi"
+      },
+      "entry_type": "Kodi",
+      "step": {
+        "user": {
+          "title": "Kodi",
+          "data": {
+            "kodi": "Kodi",
+            "nivel": "Level",
+            "vista": "Screen",
+            "tecla": "Panel key during playback"
+          },
+          "data_description": {
+            "kodi": "A player of the Kodi integration. The service.ha_link add-on must be installed on that Kodi.",
+            "nivel": "Nothing: receives nothing. Sees: shows the labelled entities. Operates: can also operate the «Kodi: actúa» ones.",
+            "vista": "What opens from Programs → HA Link: board by area (A), rows by room (C) or the plain list.",
+            "tecla": "Remote key that shows the side panel (B) over the video. «None» disables it."
+          }
+        },
+        "reconfigure": {
+          "title": "Kodi",
+          "data": {
+            "nivel": "Level",
+            "vista": "Screen",
+            "tecla": "Panel key during playback"
+          },
+          "data_description": {
+            "nivel": "Nothing: receives nothing. Sees: shows the labelled entities. Operates: can also operate the «Kodi: actúa» ones.",
+            "vista": "What opens from Programs → HA Link: board by area (A), rows by room (C) or the plain list.",
+            "tecla": "Remote key that shows the side panel (B) over the video. «None» disables it."
+          }
+        }
+      },
+      "error": {
+        "ya_dado_de_alta": "That Kodi is already added."
+      },
+      "abort": {
+        "reconfigure_successful": "Changes saved."
+      }
+    }
+  },
+  "selector": {
+    "nivel": {
+      "options": {
+        "nada": "Nothing",
+        "ve": "Sees",
+        "actua": "Operates"
+      }
+    },
+    "vista": {
+      "options": {
+        "tablero": "Board by area",
+        "filas": "Rows by room",
+        "listado": "Plain list"
+      }
+    },
+    "tecla": {
+      "options": {
+        "ninguna": "None",
+        "roja": "Red",
+        "verde": "Green",
+        "amarilla": "Yellow",
+        "azul": "Blue"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "expuestas": {
+        "name": "Exposed entities",
+        "state_attributes": {
+          "actuables": {
+            "name": "Operable"
+          },
+          "areas": {
+            "name": "Areas"
+          }
+        }
+      },
+      "enlace": {
+        "name": "Link",
+        "state": {
+          "desactivado": "Disabled",
+          "desconectado": "Disconnected",
+          "sin_addon": "Connected, no add-on",
+          "conectado": "Connected"
+        }
+      }
+    }
+  }
+}

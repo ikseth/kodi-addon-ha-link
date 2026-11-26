@@ -1,0 +1,129 @@
+# Kodi Media Center language file
+# Addon Name: HA Link
+# Addon id: service.ha_link
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_ES\n"
+
+msgctxt "#32000"
+msgid "Waiting for data from Home Assistant…"
+msgstr "Esperando datos de Home Assistant…"
+
+msgctxt "#32001"
+msgid "This Kodi must be added to the Kodi Link integration"
+msgstr "Este Kodi tiene que estar dado de alta en la integración Kodi Link"
+
+msgctxt "#32002"
+msgid "No connection with Home Assistant"
+msgstr "Sin conexión con Home Assistant"
+
+msgctxt "#32003"
+msgid "Data from {}"
+msgstr "Datos de las {}"
+
+msgctxt "#32004"
+msgid "Nothing is exposed to this Kodi"
+msgstr "No hay nada expuesto para este Kodi"
+
+msgctxt "#32005"
+msgid "Choose it in Home Assistant with the Kodi Link labels"
+msgstr "Se elige en Home Assistant con las etiquetas de Kodi Link"
+
+msgctxt "#32006"
+msgid "Right now"
+msgstr "Ahora mismo"
+
+msgctxt "#32007"
+msgid "No area"
+msgstr "Sin área"
+
+msgctxt "#32008"
+msgid "1 alert"
+msgstr "1 alerta"
+
+msgctxt "#32009"
+msgid "{} alerts"
+msgstr "{} alertas"
+
+msgctxt "#32010"
+msgid "1 active"
+msgstr "1 activo"
+
+msgctxt "#32011"
+msgid "{} active"
+msgstr "{} activos"
+
+msgctxt "#32012"
+msgid "All quiet"
+msgstr "Todo en calma"
+
+msgctxt "#32013"
+msgid "1 item"
+msgstr "1 elemento"
+
+msgctxt "#32014"
+msgid "{} items"
+msgstr "{} elementos"
+
+msgctxt "#32015"
+msgid "Read only"
+msgstr "Solo lectura"
+
+msgctxt "#32100"
+msgid "Home"
+msgstr "Casa"
+
+msgctxt "#32101"
+msgid "Up to date"
+msgstr "Al día"
+
+msgctxt "#32102"
+msgid "Data from {}"
+msgstr "Datos de las {}"
+
+msgctxt "#32103"
+msgid "Waiting for Home Assistant"
+msgstr "Esperando a Home Assistant"
+
+msgctxt "#32104"
+msgid "Nothing is exposed to this Kodi"
+msgstr "No hay nada expuesto para este Kodi"
+
+msgctxt "#32105"
+msgid "Right now"
+msgstr "Ahora mismo"
+
+msgctxt "#32106"
+msgid "No area"
+msgstr "Sin área"
+
+msgctxt "#32107"
+msgid "All at rest"
+msgstr "Todo en reposo"
+
+msgctxt "#32108"
+msgid "Scene"
+msgstr "Escena"
+
+msgctxt "#32109"
+msgid "View"
+msgstr "Ver"
+
+msgctxt "#32110"
+msgid "Exit"
+msgstr "Salir"
+
+msgctxt "#32111"
+msgid "Back to the film"
+msgstr "Volver a la película"
+
+msgctxt "#32112"
+msgid "Change area"
+msgstr "Cambiar de área"
+
+msgctxt "#32113"
+msgid "Read only"
+msgstr "Solo lectura"
+

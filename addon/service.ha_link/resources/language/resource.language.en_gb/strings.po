@@ -1,0 +1,129 @@
+# Kodi Media Center language file
+# Addon Name: HA Link
+# Addon id: service.ha_link
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+
+msgctxt "#32000"
+msgid "Waiting for data from Home Assistant…"
+msgstr ""
+
+msgctxt "#32001"
+msgid "This Kodi must be added to the Kodi Link integration"
+msgstr ""
+
+msgctxt "#32002"
+msgid "No connection with Home Assistant"
+msgstr ""
+
+msgctxt "#32003"
+msgid "Data from {}"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Nothing is exposed to this Kodi"
+msgstr ""
+
+msgctxt "#32005"
+msgid "Choose it in Home Assistant with the Kodi Link labels"
+msgstr ""
+
+msgctxt "#32006"
+msgid "Right now"
+msgstr ""
+
+msgctxt "#32007"
+msgid "No area"
+msgstr ""
+
+msgctxt "#32008"
+msgid "1 alert"
+msgstr ""
+
+msgctxt "#32009"
+msgid "{} alerts"
+msgstr ""
+
+msgctxt "#32010"
+msgid "1 active"
+msgstr ""
+
+msgctxt "#32011"
+msgid "{} active"
+msgstr ""
+
+msgctxt "#32012"
+msgid "All quiet"
+msgstr ""
+
+msgctxt "#32013"
+msgid "1 item"
+msgstr ""
+
+msgctxt "#32014"
+msgid "{} items"
+msgstr ""
+
+msgctxt "#32015"
+msgid "Read only"
+msgstr ""
+
+msgctxt "#32100"
+msgid "Home"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Up to date"
+msgstr ""
+
+msgctxt "#32102"
+msgid "Data from {}"
+msgstr ""
+
+msgctxt "#32103"
+msgid "Waiting for Home Assistant"
+msgstr ""
+
+msgctxt "#32104"
+msgid "Nothing is exposed to this Kodi"
+msgstr ""
+
+msgctxt "#32105"
+msgid "Right now"
+msgstr ""
+
+msgctxt "#32106"
+msgid "No area"
+msgstr ""
+
+msgctxt "#32107"
+msgid "All at rest"
+msgstr ""
+
+msgctxt "#32108"
+msgid "Scene"
+msgstr ""
+
+msgctxt "#32109"
+msgid "View"
+msgstr ""
+
+msgctxt "#32110"
+msgid "Exit"
+msgstr ""
+
+msgctxt "#32111"
+msgid "Back to the film"
+msgstr ""
+
+msgctxt "#32112"
+msgid "Change area"
+msgstr ""
+
+msgctxt "#32113"
+msgid "Read only"
+msgstr ""
+
