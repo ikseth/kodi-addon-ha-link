@@ -75,7 +75,10 @@ def kodi(monkeypatch):
 
     class ListItem:
         def __init__(self, label="", label2="", offscreen=False):
-            self.label, self.label2, self.art = label, label2, {}
+            self.label, self.label2, self.art, self.props = label, label2, {}, {}
+
+        def setProperties(self, props):
+            self.props.update(props)
 
         def setArt(self, art):
             self.art = art
@@ -260,3 +263,39 @@ def test_strings_po_al_dia():
 def test_plugin_abrir_una_ventana_concreta(kodi, monkeypatch):
     cargar("plugin", ["plugin://service.ha_link/", "-1", "?abrir=lateral"], monkeypatch).main()
     assert kodi.builtins == ["RunScript(%s,lateral)" % os.path.join(ADDON, "ventana.py")] and kodi.fin == []
+
+
+# --- pantalla de inicio del skin -------------------------------------------------------------------
+def test_servicio_deja_revisiones_y_titulo_de_aqui(kodi):
+    _foto_cfg(kodi, {"vista": "tablero", "tecla": "ninguna", "area": "salon", "area_n": "Salón"})
+    assert kodi.props["ha_link.aqui"] == "Salón"
+    assert all(len(kodi.props["ha_link.rev_%s" % f]) == 10 for f in ("ahora", "aqui", "estancias"))
+
+
+def test_plugin_fila_de_estancias_abre_el_tablero_en_el_area(kodi, monkeypatch):
+    _vista_publicada(kodi)
+    cargar("plugin", ["plugin://service.ha_link/", "7", "?fila=estancias"], monkeypatch).main()
+    url, li, carpeta = kodi.items[0]
+    assert li.label == "Salón" and not carpeta and url == "plugin://service.ha_link/?abrir=tablero&area=salon"
+    assert li.props["accion"] == "area" and os.path.exists(li.props["glifo"]) and os.path.exists(li.art["icon"])
+    assert os.path.exists(li.props["bloque"]) and os.path.exists(li.props["halo"])
+
+
+def test_plugin_fila_de_ahora_con_baldosas_de_k2(kodi, monkeypatch):
+    _vista_publicada(kodi)
+    cargar("plugin", ["plugin://service.ha_link/", "7", "?fila=ahora"], monkeypatch).main()
+    url, li, _ = kodi.items[0]
+    assert (li.label, li.label2) == ("Lámpara", "Salón") and url == "plugin://service.ha_link/?ver=light.l"
+    for clave in ("bloque", "halo", "glifo"):
+        assert os.path.exists(li.props[clave]), clave
+
+
+def test_plugin_abrir_tablero_en_un_area_y_la_entrada_casa(kodi, monkeypatch):
+    guion = os.path.join(ADDON, "ventana.py")
+    cargar("plugin", ["plugin://service.ha_link/", "-1", "?abrir=tablero&area=cocina"], monkeypatch).main()
+    assert kodi.builtins[-1] == "RunScript(%s,tablero,cocina)" % guion
+    cargar("plugin", ["plugin://service.ha_link/", "-1", "?abrir=inicio"], monkeypatch).main()
+    assert kodi.builtins[-1] == "RunScript(%s,tablero)" % guion  # sin datos: la pantalla por defecto
+    _foto_cfg(kodi, {"vista": "listado", "tecla": "ninguna"})
+    cargar("plugin", ["plugin://service.ha_link/", "-1", "?abrir=inicio"], monkeypatch).main()
+    assert kodi.builtins[-1] == "ActivateWindow(Programs,plugin://service.ha_link/?modo=listado,return)"

@@ -1,6 +1,6 @@
 """Ventana propia de HA Link (K2): tablero por áreas (A), filas por estancia (C) y panel lateral (B).
 
-Se abre con RunScript(<esta ruta>, tablero|filas|lateral). Capa fina: el modelo está en
+Se abre con RunScript(<esta ruta>, tablero|filas|lateral[, área]); el tablero empieza en ese área si se da. Capa fina: el modelo está en
 resources/lib/ha_link/tablero.py (sin xbmc, con pruebas) y las ventanas XML las genera
 herramientas/generar_ventanas.py. Lee la vista que deja el servicio en la ventana Home y la refresca en vivo.
 """
@@ -159,6 +159,8 @@ class Base(object):
 class Tablero(Base, xbmcgui.WindowXML):
     """A: áreas a la izquierda y baldosas del área elegida a la derecha."""
 
+    area_inicial = None
+
     def onInit(self):
         self.areas = []
         self.sel = -1
@@ -178,6 +180,8 @@ class Tablero(Base, xbmcgui.WindowXML):
         lista = self.getControl(AREAS)
         anteriores = [a.id for a in self.areas]
         elegida = anteriores[self.sel] if 0 <= self.sel < len(anteriores) else None
+        if not anteriores and self.area_inicial:
+            elegida, self.area_inicial = self.area_inicial, None
         self.areas = T.areas(self.vista, self.t)
         ids = [a.id for a in self.areas]
         if ids == anteriores and lista.size() == len(ids):
@@ -248,7 +252,7 @@ class Lateral(Base, xbmcgui.WindowXMLDialog):
         Base.cerrar(self)
 
 
-def abrir(que):
+def abrir(que, area=None):
     if que == "lateral":
         casa = xbmcgui.Window(10000)
         if casa.getProperty(ABIERTO):
@@ -261,13 +265,15 @@ def abrir(que):
         return
     clase, xml = (Filas, "ha_link_filas.xml") if que == "filas" else (Tablero, "ha_link_tablero.xml")
     ventana = clase(xml, RAIZ, "Default", "1080i")
+    if area:
+        ventana.area_inicial = area
     ventana.doModal()
     del ventana
 
 
 if __name__ == "__main__":
     try:
-        abrir(sys.argv[1] if len(sys.argv) > 1 else "tablero")
+        abrir(sys.argv[1] if len(sys.argv) > 1 else "tablero", sys.argv[2] if len(sys.argv) > 2 else None)
     except Exception as err:  # noqa: BLE001 - que un fallo de la ventana quede en el log
         xbmc.log("[service.ha_link] error en la ventana: %s" % err, xbmc.LOGERROR)
         raise

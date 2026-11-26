@@ -44,6 +44,7 @@ INGLES_K2 = {
     "volver": "Back to the film",
     "cambiar_area": "Change area",
     "solo_lectura": "Read only",
+    "estancias": "Rooms",
 }
 assert set(INGLES) == set(listado.TEXTOS), set(INGLES) ^ set(listado.TEXTOS)
 assert set(INGLES_K2) == set(tablero.TEXTOS), set(INGLES_K2) ^ set(tablero.TEXTOS)

@@ -1,7 +1,8 @@
 """Genera las ventanas XML de K2: tablero por áreas (A), filas por estancia (C) y panel lateral (B).
 
 Uso: python3 herramientas/generar_ventanas.py
-Salen en addon/service.ha_link/resources/skins/Default/1080i/. Medidas de las maquetas (1280×720) por 1,5.
+Salen en addon/service.ha_link/resources/skins/Default/1080i/. También genera estuary/include_ha_link_inicio.xml, la
+fila de baldosas para la pantalla de inicio de un clon de Estuary (la copia el parche de Estuary Adviser). Medidas de las maquetas (1280×720) por 1,5.
 Las imágenes son de herramientas/generar_k2.py; las propiedades de cada ListItem, de resources/lib/ha_link/tablero.py
 (las rutas de imagen llegan ya completas desde ventana.py). Fuentes: las de Estuary (y Estuary Adviser).
 """
@@ -14,6 +15,9 @@ sys.path.insert(0, os.path.join(ADDON, "resources", "lib"))
 from ha_link import tablero as T  # noqa: E402
 
 SALIDA = os.path.join(ADDON, "resources", "skins", "Default", "1080i")
+SALIDA_ESTUARY = os.path.join(RAIZ, "estuary", "include_ha_link_inicio.xml")
+# En un skin las imágenes propias del addon van con su ruta completa (las de cada ListItem ya llegan completas)
+MEDIA_ADDON = "special://home/addons/service.ha_link/resources/skins/Default/media/"
 
 FONDO = "FF0A0E13"
 BALDOSA = "FF151B23"
@@ -223,7 +227,7 @@ def tablero():
                        imagen(0, 21, 6, 48, "k2/barra.png", "FFFFFFFF", visible="Control.HasFocus(%d)" % AREAS)]
         cuerpo += [
             imagen(27, 27, 36, 36, prop("glifo"), "FFFFFFFF" if enfocada else T.SUB),
-            etiqueta(84, 0, 230, fila_h, "$INFO[ListItem.Label]", "font27", "FFFFFFFF" if enfocada else "FFD5DCE3"),
+            _nombre_area(84, fila_h, nav_w - 21, "FFFFFFFF" if enfocada else "FFD5DCE3"),
             indicadores_derecha(nav_w - 21, 25),
         ]
         return "".join(cuerpo)
@@ -296,6 +300,23 @@ def filas():
     return ventana(PRIMERA_FILA, controles)
 
 
+def _nombre_area(x, alto, fin, color):
+    """Nombre del área en el tablero: tan ancho como dejen los indicadores de su derecha (cuántos círculos hay y si
+    hay temperatura), para que no se monte sobre ellos. Las medidas salen de indicadores_derecha."""
+    trozos = []
+    for hay_temp in (True, False):
+        cond_t = "%sString.IsEmpty(ListItem.Property(temp))" % ("!" if hay_temp else "")
+        for n in (0, 1, 2, 3):
+            if n:
+                inicio = fin - (118 if hay_temp else 0) - n * 46
+            else:
+                inicio = fin - 110 if hay_temp else fin - 26  # termómetro, o la marca de «en reposo»
+            ancho = min(230, inicio - x - 8)
+            cond = "%s + String.IsEqual(ListItem.Property(n_ind),%d)" % (cond_t, n)
+            trozos.append(etiqueta(x, 0, ancho, alto, "$INFO[ListItem.Label]", "font27", color, visible=cond))
+    return "".join(trozos)
+
+
 def _indicador_fila(pre, i):
     cond = "!String.IsEmpty(Window.Property(%sind%d))" % (pre, i)
     return ('<control type="group"><width>40</width><height>48</height><visible>%s</visible>%s%s</control>'
@@ -355,7 +376,60 @@ def lateral():
     return ventana(AHORA_1, controles, dialogo=True)
 
 
+# --- pantalla de inicio de Estuary ---------------------------------------------------------------------
+def estuary():
+    """Include «HaLinkFila» para Includes_Home.xml de un clon de Estuary: cabecera, spinner y una fila horizontal de
+    baldosas cuadradas de K2 con el contenido de plugin://service.ha_link/?fila=... (se pasa en content_path).
+
+    Piezas de Estuary (CategoryLabel, WidgetListCommon) para que encaje en su rejilla; la baldosa es la de las filas
+    de K2 (§7.1 del diseño). La lista no se oculta cuando está vacía, como las de Estuary: Kodi no recarga una lista
+    oculta, y una fila que arranca vacía (antes de que llegue HA) se quedaría así. Lo que la oculta es `visible`."""
+    w = h = 219
+    hueco = 24
+    marcador = 987654  # se sustituye por el id de la lista, que en un include es un parámetro
+
+    def capa(enfocada):
+        xml = _con_margen(baldosa_cuadrada(w, h, marcador, enfocada))
+        xml = xml.replace(str(marcador), "$PARAM[list_id]").replace(">k2/", ">" + MEDIA_ADDON + "k2/")
+        # en la ventana Home no están los textos que pone ventana.py: se leen del addon
+        return xml.replace("$INFO[Window.Property(txt_escena)]", "$ADDON[service.ha_link %d]" % T.IDS["escena"])
+
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generado por kodi-addon-ha-link/herramientas/generar_ventanas.py: no editar a mano -->
+<include name="HaLinkFila">
+	<param name="visible">true</param>
+	<definition>
+		<include content="CategoryLabel">
+			<param name="label">$PARAM[widget_header]</param>
+			<param name="list_id" value="$PARAM[list_id]"/>
+			<param name="visible" value="$PARAM[visible]"/>
+		</include>
+		<include content="BusyListSpinner">
+			<param name="list_id" value="$PARAM[list_id]"/>
+			<param name="visible" value="$PARAM[visible]"/>
+		</include>
+		<control type="panel" id="$PARAM[list_id]">
+			<left>58</left>
+			<top>110</top>
+			<right>0</right>
+			<height>330</height>
+			<include content="WidgetListCommon">
+				<param name="list_id" value="$PARAM[list_id]"/>
+			</include>
+			<visible>$PARAM[visible]</visible>
+			<itemlayout width="%(iw)d" height="%(ih)d">%(normal)s</itemlayout>
+			<focusedlayout width="%(iw)d" height="%(ih)d">%(foco)s</focusedlayout>
+			<content target="programs">$PARAM[content_path]</content>
+		</control>
+	</definition>
+</include>
+""" % {"iw": w + hueco, "ih": h + hueco, "normal": capa(False), "foco": capa(True)}
+
+
 def main():
+    os.makedirs(os.path.dirname(SALIDA_ESTUARY), exist_ok=True)
+    with open(SALIDA_ESTUARY, "w", encoding="utf-8") as f:
+        f.write(estuary())
     os.makedirs(SALIDA, exist_ok=True)
     for nombre, xml in (("ha_link_tablero.xml", tablero()), ("ha_link_filas.xml", filas()),
                         ("ha_link_lateral.xml", lateral())):

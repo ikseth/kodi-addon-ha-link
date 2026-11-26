@@ -101,7 +101,11 @@ def hora(valor: str, zona: tzinfo, ahora: datetime) -> str | None:
     return dt.strftime("%H:%M") if dt.date() == hoy else dt.strftime("%d/%m %H:%M")
 
 
-def tono(dominio: str, clase: str | None, estado: str) -> str:
+# hvac_action que cuentan como «encendido»: un termostato en modo calor que no está calentando está en reposo
+ACCIONES_CLIMA = ("heating", "cooling", "drying", "preheating", "defrosting")
+
+
+def tono(dominio: str, clase: str | None, estado: str, accion: str | None = None) -> str:
     if estado in NO_HAY:
         return NO_DISPONIBLE
     if dominio == "binary_sensor":
@@ -123,7 +127,11 @@ def tono(dominio: str, clase: str | None, estado: str) -> str:
             return ALERTA
         return NORMAL if estado == "disarmed" else ACTIVO
     if dominio == "climate":
-        return NORMAL if estado == "off" else ACTIVO
+        if estado == "off":
+            return NORMAL
+        if accion is not None:  # si el termostato dice lo que hace, manda eso y no el modo
+            return ACTIVO if accion in ACCIONES_CLIMA else NORMAL
+        return ACTIVO
     return INFO
 
 
@@ -148,11 +156,12 @@ def describir(*, entity_id: str, nombre: str, area_id: str | None, area_nombre: 
               clase: str | None = None, unidad: str | None = None, precision: int | None = None,
               idioma: str = "en", traducciones: dict[str, str] | None = None, zona: tzinfo | None = None,
               ahora: datetime | None = None, plataforma: str | None = None,
-              clave_traduccion: str | None = None, actuable: bool = False) -> dict[str, Any]:
+              clave_traduccion: str | None = None, actuable: bool = False,
+              accion: str | None = None) -> dict[str, Any]:
     """Descripción compacta que recibe el addon (ver docs/protocolo.md)."""
     dominio = entity_id.split(".", 1)[0]
     traducciones = traducciones or {}
-    t = tono(dominio, clase, estado)
+    t = tono(dominio, clase, estado, accion)
     valor: str | None = None
     if estado in NO_HAY:
         valor = texto_estado(dominio, clase, estado, idioma, traducciones)
