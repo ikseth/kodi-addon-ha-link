@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import threading
+import time
 
 import xbmc
 import xbmcaddon
@@ -17,11 +18,15 @@ ADDON = xbmcaddon.Addon("service.ha_link")
 RAIZ = ADDON.getAddonInfo("path")
 sys.path.insert(0, os.path.join(RAIZ, "resources", "lib"))
 
+from ha_link import avisos as A  # noqa: E402
 from ha_link import listado  # noqa: E402
 from ha_link import tablero as T  # noqa: E402
 
 PROPIEDAD = "ha_link.vista"
 ABIERTO = "ha_link.lateral_abierto"
+AVISO = "ha_link.aviso"
+AVISO_ABIERTO = "ha_link.aviso_abierto"
+CERRAR_FIJA = (xbmcgui.ACTION_SELECT_ITEM, xbmcgui.ACTION_NAV_BACK, xbmcgui.ACTION_PREVIOUS_MENU)
 MEDIA = os.path.join(RAIZ, "resources", "skins", "Default", "media", "k2")
 ICONOS = os.path.join(RAIZ, "resources", "media", "iconos")
 IMAGENES = ("glifo", "bloque", "halo", "lavado", "aro", "ind1", "ind1_glifo", "ind2", "ind2_glifo", "ind3",
@@ -252,7 +257,75 @@ class Lateral(Base, xbmcgui.WindowXMLDialog):
         Base.cerrar(self)
 
 
+class Aviso(xbmcgui.WindowXMLDialog):
+    """Tarjeta de un aviso sobre lo que haya en pantalla. «tarjeta»: se va sola. «pausar»: pausa el vídeo y se queda
+    hasta que se cierra con OK o Atrás. Si llega otro aviso con ella abierta, se cambia por el nuevo."""
+
+    def onInit(self):
+        self.t = textos()
+        self.texto = None
+        self.hasta = None
+        self.fija = False
+        self.seguir = True
+        self.cerrojo = threading.Lock()
+        with self.cerrojo:
+            self.mirar()
+        self.hilo = threading.Thread(target=self._bucle)
+        self.hilo.daemon = True
+        self.hilo.start()
+
+    def mirar(self):
+        texto = xbmcgui.Window(10000).getProperty(AVISO)
+        if texto == self.texto:
+            return
+        self.texto = texto
+        try:
+            aviso = A.normalizar(json.loads(texto or "null"))
+        except ValueError:
+            aviso = None
+        if not aviso:
+            self.cerrar()
+            return
+        for k, v in A.tarjeta(aviso, self.t).items():
+            self.setProperty(k, ruta(v) if k in ("glifo", "bloque", "halo") else v)
+        self.fija = aviso["acc"] == "pausar"
+        self.hasta = None if self.fija else time.time() + aviso["d"]
+        if self.fija and xbmc.Player().isPlayingVideo() and not xbmc.getCondVisibility("Player.Paused"):
+            xbmc.Player().pause()
+
+    def _bucle(self):
+        monitor = xbmc.Monitor()
+        while self.seguir and not monitor.abortRequested():
+            if monitor.waitForAbort(0.25) or not self.seguir:
+                break
+            try:
+                with self.cerrojo:
+                    self.mirar()
+                    if self.hasta and time.time() > self.hasta:
+                        self.cerrar()
+            except RuntimeError:
+                break
+
+    def onAction(self, action):
+        if not self.fija or action.getId() in CERRAR_FIJA:
+            self.cerrar()
+
+    def cerrar(self):
+        self.seguir = False
+        self.close()
+
+
 def abrir(que, area=None):
+    if que == "aviso":
+        casa = xbmcgui.Window(10000)
+        if casa.getProperty(AVISO_ABIERTO):
+            return
+        casa.setProperty(AVISO_ABIERTO, "1")
+        try:
+            Aviso("ha_link_aviso.xml", RAIZ, "Default", "1080i").doModal()
+        finally:
+            casa.clearProperty(AVISO_ABIERTO)
+        return
     if que == "lateral":
         casa = xbmcgui.Window(10000)
         if casa.getProperty(ABIERTO):

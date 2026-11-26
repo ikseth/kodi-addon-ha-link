@@ -297,3 +297,22 @@ def lotes_cambio(cambiadas: list[dict], quitadas: list[str], limite: int = LIMIT
 
     return [([v for k, v in lote if k == "e"], [v for k, v in lote if k == "x"])
             for lote in _lotes(elementos, base, limite)]
+
+
+# --- avisos (fase 3) ----------------------------------------------------------------------------------
+MAX_TITULO_AVISO = 80
+MAX_MENSAJE_AVISO = 400
+
+
+def aviso(*, ident: str, tipo: str, gravedad: str, titulo: str | None, mensaje: str | None, duracion: int,
+          accion: str) -> dict[str, Any] | None:
+    """Mensaje «aviso» para un Kodi, o None si no hay nada que enseñar (sin texto o comportamiento «nada»).
+
+    `accion` es lo que ese Kodi hace con esa gravedad (lo elige su subentrada): «tarjeta» o «pausar».
+    """
+    titulo = " ".join(str(titulo or "").split())[:MAX_TITULO_AVISO]
+    mensaje = " ".join(str(mensaje or "").split())[:MAX_MENSAJE_AVISO]
+    if accion not in ("tarjeta", "pausar") or not (titulo or mensaje):
+        return None
+    return {"p": PROTOCOLO, "id": ident, "tipo": tipo, "g": gravedad, "ti": titulo, "m": mensaje,
+            "d": max(3, min(int(duracion), 3600)), "acc": accion}

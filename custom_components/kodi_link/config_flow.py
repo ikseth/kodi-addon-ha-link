@@ -12,7 +12,8 @@ from homeassistant.helpers import label_registry as lr
 from homeassistant.helpers import selector as sel
 
 from .const import (
-    CONF_ETIQUETA_ACTUA, CONF_ETIQUETA_VE, CONF_KODI, CONF_NIVEL, CONF_TECLA, CONF_VISTA, DOMAIN, NIVEL_VE,
+    COMPORTAMIENTO_DEFECTO, COMPORTAMIENTOS, CONF_CON, CONF_ETIQUETA_ACTUA, CONF_ETIQUETA_VE, CONF_KODI, CONF_NIVEL,
+    CONF_TECLA, CONF_VISTA, DOMAIN, GRAVEDADES, NIVEL_VE,
     NIVELES, NOMBRE_ETIQUETA_ACTUA, NOMBRE_ETIQUETA_VE, SUBENTRY_KODI, TECLA_DEFECTO, TECLAS, VISTA_DEFECTO, VISTAS,
 )
 
@@ -23,16 +24,21 @@ _VISTA = sel.SelectSelector(sel.SelectSelectorConfig(options=VISTAS, translation
                                                      mode=sel.SelectSelectorMode.LIST))
 _TECLA = sel.SelectSelector(sel.SelectSelectorConfig(options=TECLAS, translation_key="tecla",
                                                      mode=sel.SelectSelectorMode.DROPDOWN))
+_COMPORTAMIENTO = sel.SelectSelector(sel.SelectSelectorConfig(options=COMPORTAMIENTOS, translation_key="comportamiento",
+                                                              mode=sel.SelectSelectorMode.DROPDOWN))
 ICONO_ETIQUETA = "mdi:kodi"
 
 
 def _campos_kodi(actual: dict[str, Any]) -> dict:
-    """Nivel, pantalla y tecla: lo que se puede cambiar de cada Kodi."""
-    return {
+    """Nivel, pantalla, tecla y qué hacer con los avisos de cada gravedad: lo que se puede cambiar de cada Kodi."""
+    campos = {
         vol.Required(CONF_NIVEL, default=actual.get(CONF_NIVEL, NIVEL_VE)): _NIVEL,
         vol.Required(CONF_VISTA, default=actual.get(CONF_VISTA, VISTA_DEFECTO)): _VISTA,
         vol.Required(CONF_TECLA, default=actual.get(CONF_TECLA, TECLA_DEFECTO)): _TECLA,
     }
+    for g in GRAVEDADES:
+        campos[vol.Required(CONF_CON[g], default=actual.get(CONF_CON[g], COMPORTAMIENTO_DEFECTO[g]))] = _COMPORTAMIENTO
+    return campos
 
 
 def _esquema_etiquetas(actual: dict[str, Any]) -> vol.Schema:

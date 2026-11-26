@@ -1,0 +1,51 @@
+evento:
+  target:
+    entity:
+      integration: kodi_link
+      domain: notify
+  fields:
+    titulo:
+      example: "Timbre"
+      selector:
+        text:
+    mensaje:
+      required: true
+      example: "Han llamado a la puerta principal."
+      selector:
+        text:
+          multiline: true
+    tipo:
+      default: info
+      selector:
+        select:
+          translation_key: tipo_aviso
+          options:
+            - info
+            - timbre
+            - puerta
+            - ventana
+            - garaje
+            - movimiento
+            - alarma
+            - humo
+            - agua
+            - lluvia
+            - calefaccion
+            - luz
+            - sistema
+    gravedad:
+      default: aviso
+      selector:
+        select:
+          translation_key: gravedad
+          options:
+            - aviso
+            - importante
+            - grave
+    duracion:
+      default: 10
+      selector:
+        number:
+          min: 3
+          max: 3600
+          unit_of_measurement: s

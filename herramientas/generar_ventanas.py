@@ -376,6 +376,43 @@ def lateral():
     return ventana(AHORA_1, controles, dialogo=True)
 
 
+# --- aviso sobre el vídeo (fase 3) ---------------------------------------------------------------------
+def aviso():
+    """Tarjeta de un aviso de HA, arriba a la derecha (abajo van los subtítulos). Sin controles que tomen el foco:
+    ventana.py decide qué hace cada tecla. El bloque y el glifo, como las baldosas de K2 (§7.1)."""
+    w, h = 820, 214
+    x, y = 1920 - 48 - w, 48
+    s = 84  # el bloque, más pequeño que el de las baldosas: aquí manda el texto
+    bx, by = x + 34, y + 30  # arriba, a la altura del título
+    g = int(s * 0.5)
+    halo = s * 2
+    a = int(s * 1.15)
+    wp = "$INFO[Window.Property(%s)]"
+    vacio_w = "String.IsEmpty(Window.Property(%s))"
+    entra = ('<animation effect="slide" start="%d,0" end="0,0" time="350" tween="cubic" easing="out">WindowOpen'
+             '</animation><animation effect="fade" start="0" end="100" time="250">WindowOpen</animation>'
+             '<animation effect="fade" start="100" end="0" time="250">WindowClose</animation>' % (w + 60))
+    tx = bx + s + 30
+    tw = x + w - 34 - tx
+    cuerpo = "".join([
+        imagen(x - 3, y - 3, w + 6, h + 6, "k2/baldosa.png", "66000000", borde=36),
+        imagen(x, y, w, h, "k2/baldosa.png", "F5151B23", borde=34),
+        imagen(bx + s // 2 - halo // 2, by + s // 2 - halo // 2, halo, halo, wp % "halo",
+               visible="!" + vacio_w % "halo"),
+        imagen(bx + s // 2 - a // 2, by + s // 2 - a // 2, a, a, "k2/anillo_alerta.png",
+               visible="!" + vacio_w % "alerta", extra=LATE),
+        imagen(bx, by, s, s, wp % "bloque"),
+        imagen(bx + s // 2 - g // 2, by + s // 2 - g // 2, g, g, wp % "glifo", wp % "color_glifo"),
+        etiqueta(tx, y + 22, tw, 56, wp % "titulo", "font36_title", T.TXT),
+        caja(tx, y + 80, tw, 100, wp % "mensaje", "font13", "FFC9D2DC"),
+        etiqueta(tx, y + h - 40, tw, 30, wp % "pista", "font10", T.SUB, alin="right",
+                 visible="!" + vacio_w % "pista"),
+    ])
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<!-- Generado por herramientas/generar_ventanas.py: no editar a mano -->\n'
+            '<window type="dialog">\n<zorder>3</zorder>\n<controls>\n<control type="group">%s%s</control>\n'
+            '</controls>\n</window>\n' % (entra, cuerpo))
+
+
 # --- pantalla de inicio de Estuary ---------------------------------------------------------------------
 def estuary():
     """Include «HaLinkFila» para Includes_Home.xml de un clon de Estuary: cabecera, spinner y una fila horizontal de
@@ -432,7 +469,7 @@ def main():
         f.write(estuary())
     os.makedirs(SALIDA, exist_ok=True)
     for nombre, xml in (("ha_link_tablero.xml", tablero()), ("ha_link_filas.xml", filas()),
-                        ("ha_link_lateral.xml", lateral())):
+                        ("ha_link_lateral.xml", lateral()), ("ha_link_aviso.xml", aviso())):
         with open(os.path.join(SALIDA, nombre), "w", encoding="utf-8") as f:
             f.write(xml)
     print("ventanas en %s" % SALIDA)

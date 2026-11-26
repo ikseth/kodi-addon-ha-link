@@ -26,6 +26,7 @@ Contrato entre la integración `kodi_link` y el addon `service.ha_link`. Lo impl
 | `cambio` | `s`, `q` secuencia (1, 2, 3…, por sesión), `e` entidades nuevas o cambiadas, `x` ids que dejan de verse | Al cambiar un estado (agrupados en 0,3 s) o una etiqueta, un nombre o un área de una entidad |
 | `latido` | `s`, `q` (la última secuencia enviada) | Cada 60 s sin otros mensajes |
 | `adios` | — | Reservado: el Kodi deja de recibir datos (borra los suyos) |
+| `aviso` | `id`, `tipo`, `g` gravedad, `ti` título, `m` mensaje, `d` duración (s), `acc` qué hacer | Cuando HA manda un aviso a ese Kodi (desde 0.3.0) |
 
 Cada foto abre una **sesión nueva** (`s`) y pone la secuencia a 0.
 
@@ -56,6 +57,19 @@ tecla. No sube `PROTOCOLO`.
 | `v` | Valor listo para pintar, en el idioma de HA: estado traducido, número con su precisión, coma decimal y unidad, u hora local en las marcas de tiempo. Vacío en escenas y botones |
 | `t` | Tono: `activo` (encendido, abierto, detectado), `normal` (apagado, cerrado), `alerta` (humo, fuga, problema, alarma disparada), `info` (valores y botones) o `nd` (no disponible) |
 | `ac` | `1` si ese Kodi podrá accionarla (etiqueta «Kodi: actúa» y nivel «Actúa»). Sin efecto en la fase 1 |
+
+**Aviso (`aviso`, desde 0.3.0):** no forma parte de la sesión (no lleva `s` ni `q` ni cambia la vista).
+
+| Campo | Qué es |
+|---|---|
+| `tipo` | Elige el icono: `info`, `timbre`, `puerta`, `ventana`, `garaje`, `movimiento`, `alarma`, `humo`, `agua`, `lluvia`, `calefaccion`, `luz` o `sistema` |
+| `g` | `aviso` (gris), `importante` (ámbar) o `grave` (rojo, late) |
+| `ti`, `m` | Título (hasta 80 caracteres) y mensaje (hasta 400); al menos uno |
+| `d` | Segundos que se ve la tarjeta, de 3 a 3600 (una hora) |
+| `acc` | `tarjeta` (sale arriba a la derecha y se va sola; cualquier tecla la cierra y sigue su camino) o `pausar` (pausa el vídeo y se queda hasta OK o Atrás). Lo decide la subentrada del Kodi según la gravedad; con «nada» HA no lo manda |
+
+Si llega otro aviso con la tarjeta abierta, la tarjeta cambia al nuevo. Un addon anterior a 0.3.0 ignora el mensaje.
+No sube `PROTOCOLO`.
 
 ## 3. Mensajes de Kodi a HA
 

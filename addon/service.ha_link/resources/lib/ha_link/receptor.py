@@ -35,12 +35,14 @@ class Receptor(object):
 
     # --- mensajes de HA -----------------------------------------------------------------
     def recibir(self, mensaje, datos, ahora):
-        if mensaje not in ("foto", "cambio", "latido", "adios"):
+        if mensaje not in ("foto", "cambio", "latido", "adios", "aviso"):
             return []
         if not isinstance(datos, dict):
             return []
         if datos.get("p") != PROTOCOLO:
             return [("protocolo", datos.get("p"))]
+        if mensaje == "aviso":  # no toca la vista: lo pinta ventana.py (avisos.py decide cómo)
+            return [("aviso", datos)]
         self.ultimo = ahora
         salidas = []
         if self._caducado:

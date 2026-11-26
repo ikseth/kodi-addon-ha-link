@@ -75,6 +75,8 @@ def imagenes(origen):
     salida = {}
     for nombre in glifos.todos():
         salida["glifos/%s.png" % nombre] = _svg(128, 128, _glifo(ruta(origen, nombre), 128))
+    # Icono de la entrada «Casa» del menú de Estuary: con el margen de los suyos (ocupan ~60 % de su caja)
+    salida["menu_casa.png"] = _svg(128, 128, _glifo(ruta(origen, "home"), 128, escala=0.6))
 
     s = 160
     r = s * 0.3

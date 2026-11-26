@@ -52,13 +52,19 @@
             "kodi": "Kodi",
             "nivel": "Level",
             "vista": "Screen",
-            "tecla": "Panel key during playback"
+            "tecla": "Panel key during playback",
+            "con_aviso": "Notices",
+            "con_importante": "Important notices",
+            "con_grave": "Serious notices"
           },
           "data_description": {
             "kodi": "A player of the Kodi integration. The service.ha_link add-on must be installed on that Kodi.",
             "nivel": "Nothing: receives nothing. Sees: shows the labelled entities. Operates: can also operate the «Kodi: actúa» ones.",
             "vista": "What opens from Programs → HA Link: board by area (A), rows by room (C) or the plain list.",
-            "tecla": "Remote key that shows the side panel (B) over the video. «None» disables it."
+            "tecla": "Remote key that shows the side panel (B) over the video. «None» disables it.",
+            "con_aviso": "What this Kodi does with plain notices: nothing, a card that goes away by itself, or a card that pauses the video and stays until closed.",
+            "con_importante": "Same, for important notices (doorbell, a door left open…).",
+            "con_grave": "Same, for serious notices (smoke, alarm triggered…)."
           }
         },
         "reconfigure": {
@@ -66,12 +72,18 @@
           "data": {
             "nivel": "Level",
             "vista": "Screen",
-            "tecla": "Panel key during playback"
+            "tecla": "Panel key during playback",
+            "con_aviso": "Notices",
+            "con_importante": "Important notices",
+            "con_grave": "Serious notices"
           },
           "data_description": {
             "nivel": "Nothing: receives nothing. Sees: shows the labelled entities. Operates: can also operate the «Kodi: actúa» ones.",
             "vista": "What opens from Programs → HA Link: board by area (A), rows by room (C) or the plain list.",
-            "tecla": "Remote key that shows the side panel (B) over the video. «None» disables it."
+            "tecla": "Remote key that shows the side panel (B) over the video. «None» disables it.",
+            "con_aviso": "What this Kodi does with plain notices: nothing, a card that goes away by itself, or a card that pauses the video and stays until closed.",
+            "con_importante": "Same, for important notices (doorbell, a door left open…).",
+            "con_grave": "Same, for serious notices (smoke, alarm triggered…)."
           }
         }
       },
@@ -106,6 +118,37 @@
         "amarilla": "Yellow",
         "azul": "Blue"
       }
+    },
+    "comportamiento": {
+      "options": {
+        "nada": "Nothing",
+        "tarjeta": "Card",
+        "pausar": "Card and pause"
+      }
+    },
+    "gravedad": {
+      "options": {
+        "aviso": "Notice",
+        "importante": "Important",
+        "grave": "Serious"
+      }
+    },
+    "tipo_aviso": {
+      "options": {
+        "info": "Information",
+        "timbre": "Doorbell",
+        "puerta": "Door",
+        "ventana": "Window",
+        "garaje": "Garage",
+        "movimiento": "Motion",
+        "alarma": "Alarm",
+        "humo": "Smoke",
+        "agua": "Water",
+        "lluvia": "Rain",
+        "calefaccion": "Heating",
+        "luz": "Light",
+        "sistema": "System"
+      }
     }
   },
   "entity": {
@@ -128,6 +171,42 @@
           "desconectado": "Disconnected",
           "sin_addon": "Connected, no add-on",
           "conectado": "Connected"
+        }
+      }
+    },
+    "notify": {
+      "avisos": {
+        "name": "Notices"
+      },
+      "avisos_todos": {
+        "name": "Notices to every Kodi"
+      }
+    }
+  },
+  "services": {
+    "evento": {
+      "name": "Send a notice",
+      "description": "Shows a notice on the TV, over the video. Each Kodi does what its configuration says for that severity.",
+      "fields": {
+        "titulo": {
+          "name": "Title",
+          "description": "First line of the card."
+        },
+        "mensaje": {
+          "name": "Message",
+          "description": "Text of the notice."
+        },
+        "tipo": {
+          "name": "Type",
+          "description": "Chooses the icon."
+        },
+        "gravedad": {
+          "name": "Severity",
+          "description": "Notice, important or serious: sets the colour and what each Kodi does with it."
+        },
+        "duracion": {
+          "name": "Duration",
+          "description": "Seconds the card stays (not for the ones that pause)."
         }
       }
     }

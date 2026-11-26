@@ -29,6 +29,8 @@ PROPIEDAD = "ha_link.vista"
 # Para las filas de inicio del skin: una revisión por fila (la mete en la dirección, y Kodi recarga la fila cuando
 # cambia) y el nombre del área de este Kodi (título de «Aquí»).
 REVISION = "ha_link.rev_%s"
+AVISO = "ha_link.aviso"  # el aviso en curso (JSON), para la tarjeta de ventana.py
+AVISO_ABIERTO = "ha_link.aviso_abierto"
 TITULO_AQUI = "ha_link.aqui"
 VENTANA_HOME = 10000
 REFRESCO_MIN = 2.0  # s entre dos refrescos del listado abierto
@@ -73,6 +75,8 @@ class Servicio(xbmc.Monitor):
                 self.publicar()
             elif salida[0] == "emitir":
                 emitir(salida[1], salida[2])
+            elif salida[0] == "aviso":
+                self.avisar(salida[1])
             elif salida[0] == "protocolo" and not self.avisado_protocolo:
                 self.avisado_protocolo = True
                 log("HA usa la versión %s del protocolo y este addon la %s: actualizar la que esté atrasada"
@@ -84,6 +88,14 @@ class Servicio(xbmc.Monitor):
         self.revisar_inicio(vista)
         self.refrescar = True
         self.atajo(self.receptor.cfg.get("tecla"))
+
+    def avisar(self, datos):
+        """Deja el aviso en la ventana Home y abre la tarjeta si no está ya a la vista (si lo está, se cambia sola)."""
+        datos = dict(datos, recibido=time.time())
+        self.ventana.setProperty(AVISO, json.dumps(datos, ensure_ascii=False))
+        log("aviso %s (%s, %s)" % (datos.get("tipo"), datos.get("g"), datos.get("acc")))
+        if not self.ventana.getProperty(AVISO_ABIERTO):
+            xbmc.executebuiltin("RunScript(%s,aviso)" % GUION)
 
     def revisar_inicio(self, vista):
         """Solo se toca la revisión de una fila si cambia lo que enseña: cambiarla hace que Kodi la vuelva a pedir."""

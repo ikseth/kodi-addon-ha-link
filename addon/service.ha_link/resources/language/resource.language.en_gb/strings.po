@@ -131,3 +131,11 @@ msgctxt "#32114"
 msgid "Rooms"
 msgstr ""
 
+msgctxt "#32115"
+msgid "Notice"
+msgstr ""
+
+msgctxt "#32116"
+msgid "OK to close"
+msgstr ""
+

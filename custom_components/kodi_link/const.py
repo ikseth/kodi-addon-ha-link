@@ -25,6 +25,14 @@ VISTA_DEFECTO = "tablero"
 CONF_TECLA = "tecla"  # tecla del mando que abre el panel lateral (B) durante la reproducción
 TECLAS = ["ninguna", "roja", "verde", "amarilla", "azul"]
 TECLA_DEFECTO = "azul"
+# Avisos (fase 3): qué hace este Kodi con cada gravedad
+GRAVEDADES = ["aviso", "importante", "grave"]
+COMPORTAMIENTOS = ["nada", "tarjeta", "pausar"]  # nada: no se enseña; tarjeta: sale y se va sola; pausar: se queda
+CONF_CON = {g: f"con_{g}" for g in GRAVEDADES}
+COMPORTAMIENTO_DEFECTO = {"aviso": "tarjeta", "importante": "tarjeta", "grave": "pausar"}
+TIPOS_AVISO = ["info", "timbre", "puerta", "ventana", "garaje", "movimiento", "alarma", "humo", "agua", "lluvia",
+               "calefaccion", "luz", "sistema"]
+DURACION_AVISO = 10  # s
 
 # Estado del enlace con cada Kodi
 DESACTIVADO = "desactivado"
