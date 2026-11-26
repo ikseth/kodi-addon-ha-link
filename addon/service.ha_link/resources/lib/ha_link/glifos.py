@@ -38,6 +38,7 @@ GLIFOS = {
     "clima": ("thermostat", "thermostat"),
     "tele": ("television", "television-off"),
     "persona": ("account", "account-outline"),
+    "tiempo": ("weather-partly-cloudy", "weather-partly-cloudy"),
     "generico": ("information-outline", "information-outline"),
     "area": ("floor-plan", "floor-plan"),
     "ahora": ("lightning-bolt", "lightning-bolt"),

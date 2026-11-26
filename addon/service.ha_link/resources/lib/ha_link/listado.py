@@ -71,7 +71,7 @@ TIPOS = {
     ("scene", None): "escena", ("script", None): "script", ("button", None): "boton",
     ("input_button", None): "boton", ("cover", "garage"): "garaje", ("cover", None): "persiana",
     ("lock", None): "candado", ("alarm_control_panel", None): "alarma", ("climate", None): "clima",
-    ("media_player", None): "tele", ("person", None): "persona", ("device_tracker", None): "persona",
+    ("media_player", None): "tele", ("person", None): "persona", ("weather", None): "tiempo", ("device_tracker", None): "persona",
     ("number", None): "sensor", ("input_number", None): "sensor",
 }
 

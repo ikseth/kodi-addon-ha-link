@@ -201,10 +201,12 @@ class Gestor:
         precision = opciones.get("display_precision")
         if precision is None:
             precision = opciones.get("suggested_display_precision")
+        accion = None
         if st is not None:
             estado, nombre = st.state, st.name
             clase = st.attributes.get("device_class")
             unidad = st.attributes.get("unit_of_measurement")
+            accion = st.attributes.get("hvac_action")
         else:
             estado, nombre = STATE_UNAVAILABLE, ent.name or ent.original_name or eid
             clase = ent.device_class or ent.original_device_class
@@ -213,4 +215,4 @@ class Gestor:
                            clase=clase, unidad=unidad, precision=precision, idioma=self.hass.config.language,
                            traducciones=self._traducciones, zona=dt_util.get_default_time_zone(),
                            ahora=dt_util.now(), plataforma=ent.platform, clave_traduccion=ent.translation_key,
-                           actuable=eid in self._actuables)
+                           actuable=eid in self._actuables, accion=accion)

@@ -26,7 +26,7 @@ AHORA = listado.AHORA
 SIN_AREA = listado.SIN_AREA
 MAX_AHORA_LATERAL = 3
 MAX_AQUI_LATERAL = 6
-MAX_FILAS = 16  # filas que tiene la ventana C (incluida «Ahora mismo»)
+MAX_FILAS = 32  # filas que tiene la ventana C (incluida «Ahora mismo»); una casa grande pasa de 20 áreas
 MAX_INDICADORES = 3
 
 ESCENAS = ("scene", "script", "button", "input_button")
@@ -47,6 +47,7 @@ TEXTOS = {
     "volver": "Volver a la película",
     "cambiar_area": "Cambiar de área",
     "solo_lectura": "Solo lectura",
+    "estancias": "Estancias",
 }
 IDS = {clave: 32100 + i for i, clave in enumerate(TEXTOS)}
 

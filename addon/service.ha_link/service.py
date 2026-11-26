@@ -20,11 +20,16 @@ ID = ADDON.getAddonInfo("id")
 VERSION = ADDON.getAddonInfo("version")
 sys.path.insert(0, os.path.join(ADDON.getAddonInfo("path"), "resources", "lib"))
 
+from ha_link import inicio  # noqa: E402
 from ha_link import receptor  # noqa: E402
 from ha_link import tablero  # noqa: E402
 
 EMISOR_HA = "kodi_link"
 PROPIEDAD = "ha_link.vista"
+# Para las filas de inicio del skin: una revisión por fila (la mete en la dirección, y Kodi recarga la fila cuando
+# cambia) y el nombre del área de este Kodi (título de «Aquí»).
+REVISION = "ha_link.rev_%s"
+TITULO_AQUI = "ha_link.aqui"
 VENTANA_HOME = 10000
 REFRESCO_MIN = 2.0  # s entre dos refrescos del listado abierto
 MAPA = "special://profile/keymaps/ha_link.xml"
@@ -74,9 +79,18 @@ class Servicio(xbmc.Monitor):
                     % (salida[1], receptor.PROTOCOLO), xbmc.LOGWARNING)
 
     def publicar(self):
-        self.ventana.setProperty(PROPIEDAD, json.dumps(self.receptor.vista(time.time()), ensure_ascii=False))
+        vista = self.receptor.vista(time.time())
+        self.ventana.setProperty(PROPIEDAD, json.dumps(vista, ensure_ascii=False))
+        self.revisar_inicio(vista)
         self.refrescar = True
         self.atajo(self.receptor.cfg.get("tecla"))
+
+    def revisar_inicio(self, vista):
+        """Solo se toca la revisión de una fila si cambia lo que enseña: cambiarla hace que Kodi la vuelva a pedir."""
+        self.ventana.setProperty(TITULO_AQUI, inicio.titulo_aqui(vista))
+        for fila, huella in inicio.revisiones(vista).items():
+            if self.ventana.getProperty(REVISION % fila) != huella:
+                self.ventana.setProperty(REVISION % fila, huella)
 
     def atajo(self, tecla):
         """Escribe (o borra) el mapa de teclas del panel lateral cuando cambia la tecla elegida en HA."""
@@ -118,6 +132,9 @@ class Servicio(xbmc.Monitor):
             self.atender(self.receptor.revisar(time.time()))
             self.refrescar_si_abierto()
         self.ventana.clearProperty(PROPIEDAD)
+        self.ventana.clearProperty(TITULO_AQUI)
+        for fila in inicio.FILAS:
+            self.ventana.clearProperty(REVISION % fila)
         log("termina")
 
 

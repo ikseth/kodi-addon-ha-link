@@ -148,3 +148,13 @@ def test_icono_del_area_y_cfg_en_la_primera_parte():
     partes = L.mensajes_foto("s1", [{"id": "salon", "n": "Salón"}], _muchas(3), "ve", cfg=cfg)
     assert partes[0]["cfg"] == cfg and all("cfg" not in p for p in partes[1:])
     assert all(L.tamano(L.peticion("foto", p, "kodi_link", 1)) <= L.LIMITE for p in partes)
+
+
+def test_termostato_activo_solo_si_calienta():
+    assert L.tono("climate", None, "heat", "heating") == L.ACTIVO
+    assert L.tono("climate", None, "heat", "idle") == L.NORMAL
+    assert L.tono("climate", None, "off", "idle") == L.NORMAL
+    assert L.tono("climate", None, "heat") == L.ACTIVO  # sin hvac_action, manda el modo
+    d = L.describir(entity_id="climate.salon", nombre="Calefacción", area_id="salon", area_nombre="Salón",
+                    estado="heat", accion="idle")
+    assert d["t"] == L.NORMAL

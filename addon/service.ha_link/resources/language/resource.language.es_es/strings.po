@@ -127,3 +127,7 @@ msgctxt "#32113"
 msgid "Read only"
 msgstr "Solo lectura"
 
+msgctxt "#32114"
+msgid "Rooms"
+msgstr "Estancias"
+

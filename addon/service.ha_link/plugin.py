@@ -3,7 +3,11 @@
 Qué se abre lo decide la configuración de este Kodi en HA (pantalla: tablero, filas o listado). El listado es una
 capa fina: lee la vista que deja el servicio en la ventana Home y pinta las filas que calcula
 resources/lib/ha_link/listado.py (sin xbmc, con tests). «?modo=listado» lo abre siempre, y
-«?abrir=tablero|filas|lateral» abre esa ventana (por ejemplo desde HA con Addons.ExecuteAddon).
+«?abrir=tablero|filas|lateral» abre esa ventana (por ejemplo desde HA con Addons.ExecuteAddon); «&area=<id>» la abre
+en esa área. «?abrir=inicio» abre la pantalla elegida en HA (la entrada «Casa» del skin).
+
+«?fila=ahora|aqui|estancias» son las filas de la pantalla de inicio del skin (resources/lib/ha_link/inicio.py): cada
+elemento lleva las propiedades de las baldosas de K2 para que el skin lo pinte igual.
 """
 import json
 import os
@@ -20,10 +24,16 @@ ADDON = xbmcaddon.Addon()
 RAIZ = ADDON.getAddonInfo("path")
 sys.path.insert(0, os.path.join(RAIZ, "resources", "lib"))
 
+from ha_link import inicio  # noqa: E402
 from ha_link import listado  # noqa: E402
+from ha_link import tablero  # noqa: E402
 
 PROPIEDAD = "ha_link.vista"
 ICONOS = os.path.join(RAIZ, "resources", "media", "iconos")
+MEDIA = os.path.join(RAIZ, "resources", "skins", "Default", "media", "k2")
+GUION = os.path.join(RAIZ, "ventana.py")
+IMAGENES = ("glifo", "bloque", "halo", "lavado", "aro", "ind1", "ind1_glifo", "ind2", "ind2_glifo", "ind3",
+            "ind3_glifo")
 BASE = sys.argv[0]
 HANDLE = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].lstrip("-").isdigit() else -1
 PARAMS = dict(parse_qsl(sys.argv[2][1:])) if len(sys.argv) > 2 else {}
@@ -59,6 +69,29 @@ def pintar(filas):
     xbmcplugin.endOfDirectory(HANDLE, succeeded=True, updateListing=False, cacheToDisc=False)
 
 
+def pintar_fila(nombre, v):
+    """Una fila de la pantalla de inicio: baldosas de K2 como elementos de un directorio."""
+    t = {clave: ADDON.getLocalizedString(ident) for clave, ident in tablero.IDS.items()}
+    for b in inicio.fila(nombre, v, t):
+        li = xbmcgui.ListItem(label=b.linea1, label2=b.linea2, offscreen=True)
+        li.setProperties({k: (os.path.join(MEDIA, x) if k in IMAGENES and x else x) for k, x in b.props.items()})
+        if b.props.get("glifo"):
+            li.setArt({"icon": os.path.join(MEDIA, b.props["glifo"])})
+        if b.props.get("accion") == "area":
+            destino = {"abrir": "tablero", "area": b.entidad}
+        else:
+            destino = {"ver": b.entidad} if b.entidad else {"nada": "1"}
+        xbmcplugin.addDirectoryItem(HANDLE, "%s?%s" % (BASE, urlencode(destino)), li, isFolder=False)
+    xbmcplugin.setContent(HANDLE, "files")
+    xbmcplugin.endOfDirectory(HANDLE, succeeded=True, updateListing=False, cacheToDisc=False)
+
+
+def abrir_ventana(que, area=None):
+    if HANDLE >= 0:
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+    xbmc.executebuiltin("RunScript(%s,%s%s)" % (GUION, que, ",%s" % area if area else ""))
+
+
 def main():
     v = vista()
     t = textos()
@@ -69,20 +102,24 @@ def main():
         return
     if "nada" in PARAMS:
         return
+    if PARAMS.get("fila") in inicio.FILAS:
+        pintar_fila(PARAMS["fila"], v)
+        return
+    pantalla = ((v or {}).get("cfg") or {}).get("vista") or "tablero"
+    if PARAMS.get("abrir") == "inicio":
+        if pantalla in ("tablero", "filas"):
+            abrir_ventana(pantalla)
+        else:
+            xbmc.executebuiltin("ActivateWindow(Programs,%s?modo=listado,return)" % BASE)
+        return
     if PARAMS.get("abrir") in ("tablero", "filas", "lateral"):
-        if HANDLE >= 0:
-            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-        xbmc.executebuiltin("RunScript(%s,%s)" % (os.path.join(RAIZ, "ventana.py"), PARAMS["abrir"]))
+        abrir_ventana(PARAMS["abrir"], PARAMS.get("area"))
         return
     if "area" in PARAMS:
         pintar(listado.area(v, PARAMS["area"], time.time(), t))
         return
-    pantalla = ((v or {}).get("cfg") or {}).get("vista") or "tablero"
     if PARAMS.get("modo") != "listado" and pantalla in ("tablero", "filas"):
-        # La raíz abre la ventana propia y no se queda en un listado vacío
-        if HANDLE >= 0:
-            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-        xbmc.executebuiltin("RunScript(%s,%s)" % (os.path.join(RAIZ, "ventana.py"), pantalla))
+        abrir_ventana(pantalla)  # la raíz abre la ventana propia y no se queda en un listado vacío
         return
     pintar(listado.raiz(v, time.time(), t))
 

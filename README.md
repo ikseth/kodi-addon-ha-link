@@ -36,6 +36,7 @@ estancia y panel lateral durante la reproducción. Ver
 | `tests/` | Pruebas del addon (con módulos `xbmc*` falsos para las capas finas) |
 | `tests_ha/` | Pruebas de la integración (`pytest-homeassistant-custom-component`, con un Kodi falso por WebSocket) |
 | `herramientas/` | Generadores de `strings.po`, de los iconos del listado y de las imágenes y ventanas de K2 (Material Design Icons) |
+| `estuary/` | Include de las filas de inicio para un clon de Estuary (generado; lo usa el parche de Estuary Adviser) |
 | `fase0/` | Prueba de canal de la fase 0 (histórico) |
 
 Pruebas: `PYTHONDONTWRITEBYTECODE=1 python -m pytest -p no:cacheprovider tests tests_ha`, en un entorno con

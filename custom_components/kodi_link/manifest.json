@@ -1,7 +1,7 @@
 {
   "domain": "kodi_link",
   "name": "Kodi Link",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "documentation": "https://github.com/ikseth/kodi-addon-ha-link/blob/main/docs/diseno.md",
   "issue_tracker": "https://github.com/ikseth/kodi-addon-ha-link/issues",
   "codeowners": [

@@ -158,6 +158,36 @@ ejemplo: pintado, navegación, cambio en vivo sin perder el foco, tecla y pausa.
 
 Validado en una tele real el 26/11. Pendiente: llevar al listado (K1) lo que un listado permita (variantes de icono por estado).
 
+### 7.2 Sección «Casa» en la pantalla de inicio (0.2.1)
+
+En un clon de Estuary (el de `kodi_content_adviser`, Estuary Adviser) la casa entra en el **menú principal**, delante
+de «Tiempo», solo si HA Link está activo. Con el foco en «Casa», a la derecha, tres filas de baldosas de K2:
+
+| Fila | Qué enseña | Al pulsar |
+|---|---|---|
+| Ahora mismo | Lo encendido o en alerta de toda la casa, alertas primero; «Todo en reposo» si no hay nada | Aviso «solo lectura» |
+| Aquí (nombre del área) | Las entidades del área de este Kodi; no sale si no tiene área o no hay nada en ella | Aviso «solo lectura» |
+| Estancias | Una baldosa por área: su icono en un bloque del color de lo peor que tenga y la temperatura | El tablero en ese área |
+
+Pulsar «Casa» abre la pantalla elegida en HA para ese Kodi.
+
+Un termostato cuenta como «encendido» solo si está calentando o enfriando (`hvac_action`), no por estar en modo
+calor: si no, todos los de una casa con calefacción llenan «Ahora mismo» en invierno (0.2.1 de la integración). Si el
+termostato no informa de `hvac_action`, manda el modo.
+
+- **Contenido:** `plugin://service.ha_link/?fila=ahora|aqui|estancias` (`inicio.py`, sin `xbmc`). Cada elemento
+  lleva las propiedades de las baldosas de K2, y el skin las pinta con la misma baldosa.
+- **Recarga:** Kodi solo vuelve a pedir una fila cuando cambia su dirección. El servicio deja en la ventana Home una
+  revisión por fila (`ha_link.rev_<fila>`) que solo cambia si cambia lo que la fila enseña, y el skin la mete en la
+  dirección. Así la potencia de las placas, que se mueve cada pocos segundos, no hace parpadear la pantalla.
+- **Una lista oculta no se recarga:** las filas no se ocultan por estar vacías (como hace Estuary con las suyas). La
+  fila «Aquí» se oculta con una propiedad (`ha_link.aqui`, vacía si no hay nada que enseñar).
+- **La baldosa sale de este repo:** `herramientas/generar_ventanas.py` escribe `estuary/include_ha_link_inicio.xml`
+  (el include `HaLinkFila`), y el parche de Estuary Adviser lo copia tal cual. Se cambia aquí y se vuelve a copiar.
+
+Probado en el Kodi de escritorio con los datos reales del piloto (26/11): las tres filas, la navegación con el mando,
+la recarga cuando llegan los datos tarde y abrir el tablero en un área.
+
 ## 8. Canal de notificaciones y eventos (D4)
 
 Hay dos piezas, las dos de la integración y usables desde el editor visual de automatismos:
