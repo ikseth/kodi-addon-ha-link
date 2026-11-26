@@ -299,3 +299,14 @@ def test_plugin_abrir_tablero_en_un_area_y_la_entrada_casa(kodi, monkeypatch):
     _foto_cfg(kodi, {"vista": "listado", "tecla": "ninguna"})
     cargar("plugin", ["plugin://service.ha_link/", "-1", "?abrir=inicio"], monkeypatch).main()
     assert kodi.builtins[-1] == "ActivateWindow(Programs,plugin://service.ha_link/?modo=listado,return)"
+
+
+def test_servicio_aviso_deja_el_aviso_y_abre_la_tarjeta_una_vez(kodi):
+    srv = cargar("service").Servicio()
+    aviso = {"p": 1, "id": "a1", "tipo": "timbre", "g": "importante", "ti": "Timbre", "m": "Puerta", "acc": "tarjeta"}
+    srv.onNotification("kodi_link", "Other.aviso", json.dumps(aviso))
+    assert json.loads(kodi.props["ha_link.aviso"])["id"] == "a1"
+    assert kodi.builtins == ["RunScript(%s,aviso)" % os.path.join(ADDON, "ventana.py")]
+    kodi.props["ha_link.aviso_abierto"] = "1"  # la tarjeta ya está a la vista: solo se cambia el aviso
+    srv.onNotification("kodi_link", "Other.aviso", json.dumps(dict(aviso, id="a2")))
+    assert json.loads(kodi.props["ha_link.aviso"])["id"] == "a2" and len(kodi.builtins) == 1

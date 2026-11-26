@@ -48,6 +48,8 @@ TEXTOS = {
     "cambiar_area": "Cambiar de área",
     "solo_lectura": "Solo lectura",
     "estancias": "Estancias",
+    "aviso": "Aviso",
+    "cerrar_aviso": "OK para cerrar",
 }
 IDS = {clave: 32100 + i for i, clave in enumerate(TEXTOS)}
 

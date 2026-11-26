@@ -61,6 +61,8 @@ AREAS = (
 INTERFAZ = (
     "home", "bell-ring", "check-circle-outline", "lan-connect", "lan-disconnect", "play", "thermometer",
     "arrow-left", "menu", "information-variant", "circle-medium", "pause", "timer-sand",
+    # avisos (avisos.py): los que no salen ya en GLIFOS
+    "weather-pouring", "shield-lock", "thermostat",
 )
 
 

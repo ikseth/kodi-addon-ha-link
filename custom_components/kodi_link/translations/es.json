@@ -52,13 +52,19 @@
             "kodi": "Kodi",
             "nivel": "Nivel",
             "vista": "Pantalla",
-            "tecla": "Tecla del panel durante la reproducción"
+            "tecla": "Tecla del panel durante la reproducción",
+            "con_aviso": "Avisos",
+            "con_importante": "Avisos importantes",
+            "con_grave": "Avisos graves"
           },
           "data_description": {
             "kodi": "Un reproductor de la integración Kodi. Ese Kodi necesita el addon service.ha_link.",
             "nivel": "Nada: no recibe nada. Ve: muestra las entidades etiquetadas. Actúa: además puede accionar las de «Kodi: actúa».",
             "vista": "Lo que se abre desde Programas → HA Link: tablero por áreas (A), filas por estancia (C) o el listado sencillo.",
-            "tecla": "Tecla del mando que muestra el panel lateral (B) sobre el vídeo. «Ninguna» lo desactiva."
+            "tecla": "Tecla del mando que muestra el panel lateral (B) sobre el vídeo. «Ninguna» lo desactiva.",
+            "con_aviso": "Qué hace este Kodi con los avisos normales: nada, una tarjeta que se va sola, o una tarjeta que pausa el vídeo y se queda hasta cerrarla.",
+            "con_importante": "Lo mismo, con los avisos importantes (timbre, una puerta que se queda abierta…).",
+            "con_grave": "Lo mismo, con los avisos graves (humo, alarma disparada…)."
           }
         },
         "reconfigure": {
@@ -66,12 +72,18 @@
           "data": {
             "nivel": "Nivel",
             "vista": "Pantalla",
-            "tecla": "Tecla del panel durante la reproducción"
+            "tecla": "Tecla del panel durante la reproducción",
+            "con_aviso": "Avisos",
+            "con_importante": "Avisos importantes",
+            "con_grave": "Avisos graves"
           },
           "data_description": {
             "nivel": "Nada: no recibe nada. Ve: muestra las entidades etiquetadas. Actúa: además puede accionar las de «Kodi: actúa».",
             "vista": "Lo que se abre desde Programas → HA Link: tablero por áreas (A), filas por estancia (C) o el listado sencillo.",
-            "tecla": "Tecla del mando que muestra el panel lateral (B) sobre el vídeo. «Ninguna» lo desactiva."
+            "tecla": "Tecla del mando que muestra el panel lateral (B) sobre el vídeo. «Ninguna» lo desactiva.",
+            "con_aviso": "Qué hace este Kodi con los avisos normales: nada, una tarjeta que se va sola, o una tarjeta que pausa el vídeo y se queda hasta cerrarla.",
+            "con_importante": "Lo mismo, con los avisos importantes (timbre, una puerta que se queda abierta…).",
+            "con_grave": "Lo mismo, con los avisos graves (humo, alarma disparada…)."
           }
         }
       },
@@ -106,6 +118,37 @@
         "amarilla": "Amarilla",
         "azul": "Azul"
       }
+    },
+    "comportamiento": {
+      "options": {
+        "nada": "Nada",
+        "tarjeta": "Tarjeta",
+        "pausar": "Tarjeta y pausa"
+      }
+    },
+    "gravedad": {
+      "options": {
+        "aviso": "Aviso",
+        "importante": "Importante",
+        "grave": "Grave"
+      }
+    },
+    "tipo_aviso": {
+      "options": {
+        "info": "Información",
+        "timbre": "Timbre",
+        "puerta": "Puerta",
+        "ventana": "Ventana",
+        "garaje": "Garaje",
+        "movimiento": "Movimiento",
+        "alarma": "Alarma",
+        "humo": "Humo",
+        "agua": "Agua",
+        "lluvia": "Lluvia",
+        "calefaccion": "Calefacción",
+        "luz": "Luz",
+        "sistema": "Sistema"
+      }
     }
   },
   "entity": {
@@ -128,6 +171,42 @@
           "desconectado": "Desconectado",
           "sin_addon": "Conectado, sin addon",
           "conectado": "Conectado"
+        }
+      }
+    },
+    "notify": {
+      "avisos": {
+        "name": "Avisos"
+      },
+      "avisos_todos": {
+        "name": "Avisos a todos los Kodi"
+      }
+    }
+  },
+  "services": {
+    "evento": {
+      "name": "Mandar un aviso",
+      "description": "Enseña un aviso en la tele, sobre el vídeo. Cada Kodi hace lo que diga su configuración para esa gravedad.",
+      "fields": {
+        "titulo": {
+          "name": "Título",
+          "description": "Primera línea de la tarjeta."
+        },
+        "mensaje": {
+          "name": "Mensaje",
+          "description": "Texto del aviso."
+        },
+        "tipo": {
+          "name": "Tipo",
+          "description": "Elige el icono."
+        },
+        "gravedad": {
+          "name": "Gravedad",
+          "description": "Aviso, importante o grave: decide el color y qué hace cada Kodi con él."
+        },
+        "duracion": {
+          "name": "Duración",
+          "description": "Segundos que se ve la tarjeta (no en las que pausan)."
         }
       }
     }

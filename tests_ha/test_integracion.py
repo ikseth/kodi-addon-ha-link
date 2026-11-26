@@ -254,7 +254,8 @@ async def test_alta_crea_las_etiquetas_y_el_kodi(hass: HomeAssistant, kodi: Kodi
     sid = next(iter(entrada.subentries))
     res = await hass.config_entries.subentries.async_init(
         (entrada.entry_id, "kodi"), context={"source": config_entries.SOURCE_RECONFIGURE, "subentry_id": sid})
-    assert {str(k) for k in res["data_schema"].schema} == {CONF_NIVEL, "vista", "tecla"}
+    assert {str(k) for k in res["data_schema"].schema} == {CONF_NIVEL, "vista", "tecla", "con_aviso",
+                                                          "con_importante", "con_grave"}
     res = await hass.config_entries.subentries.async_configure(
         res["flow_id"], {CONF_NIVEL: "ve", "vista": "listado", "tecla": "ninguna"})
     assert res["reason"] == "reconfigure_successful"
@@ -269,3 +270,28 @@ async def test_etiquetas_iguales_es_error(hass: HomeAssistant) -> None:
     res = await hass.config_entries.flow.async_configure(res["flow_id"],
                                                          {CONF_ETIQUETA_VE: ve, CONF_ETIQUETA_ACTUA: ve})
     assert res["errors"] == {"base": "etiquetas_iguales"}
+
+
+async def test_avisos_por_notify_y_por_la_accion(hass: HomeAssistant, kodi: KodiFalso) -> None:
+    entrada, *_ = await _montar(hass, kodi)
+    await esperar(lambda: kodi.mensajes("foto"))
+    reg = er.async_get(hass)
+    sid = next(iter(entrada.subentries))
+    uno = reg.async_get_entity_id("notify", DOMAIN, f"{sid}_avisos")
+    todos = reg.async_get_entity_id("notify", DOMAIN, f"{entrada.entry_id}_avisos")
+    assert uno and todos
+    # notify.send_message: gravedad «aviso», que por defecto es una tarjeta
+    await hass.services.async_call("notify", "send_message", {"entity_id": uno, "message": "Hola", "title": "Prueba"},
+                                   blocking=True)
+    await esperar(lambda: kodi.mensajes("aviso"))
+    a = kodi.mensajes("aviso")[-1]
+    assert (a["ti"], a["m"], a["g"], a["tipo"], a["acc"], a["p"]) == ("Prueba", "Hola", "aviso", "info", "tarjeta",
+                                                                      L.PROTOCOLO)
+    # la acción propia, a todos los Kodi: grave pausa por defecto
+    await hass.services.async_call(DOMAIN, "evento", {"entity_id": todos, "mensaje": "Humo en la cocina",
+                                                      "tipo": "humo", "gravedad": "grave", "duracion": 30},
+                                   blocking=True)
+    await esperar(lambda: len(kodi.mensajes("aviso")) == 2)
+    a = kodi.mensajes("aviso")[-1]
+    assert (a["tipo"], a["g"], a["acc"], a["d"]) == ("humo", "grave", "pausar", 30)
+    await hass.config_entries.async_unload(entrada.entry_id)

@@ -17,7 +17,8 @@ from homeassistant.util import dt as dt_util
 
 from . import logica as L
 from .const import (
-    ADDON_ID, CONECTADO, CONF_KODI, CONF_NIVEL, CONF_TECLA, CONF_VISTA, DESACTIVADO, DESCONECTADO, EMISOR,
+    ADDON_ID, COMPORTAMIENTO_DEFECTO, CONECTADO, CONF_CON, CONF_KODI, CONF_NIVEL, CONF_TECLA, CONF_VISTA,
+    DESACTIVADO, DESCONECTADO, EMISOR,
     ESPERA_MAX, ESPERA_MIN, LATIDO, NIVEL_ACTUA, NIVEL_VE, SIN_ADDON, TECLA_DEFECTO, VISTA_DEFECTO,
 )
 
@@ -41,6 +42,8 @@ class Enlace:
         self.nivel: str = sub.data.get(CONF_NIVEL, NIVEL_VE)
         self.vista: str = sub.data.get(CONF_VISTA, VISTA_DEFECTO)
         self.tecla: str = sub.data.get(CONF_TECLA, TECLA_DEFECTO)
+        self.comportamiento: dict[str, str] = {
+            g: sub.data.get(clave, COMPORTAMIENTO_DEFECTO[g]) for g, clave in CONF_CON.items()}
         self.estado = DESCONECTADO if self.activo else DESACTIVADO
         self.version_addon: str | None = None
         self.ultima_foto = None
@@ -230,3 +233,16 @@ class Enlace:
                 self._sec += 1
                 await self._enviar("cambio", {"p": L.PROTOCOLO, "s": self._sesion, "q": self._sec, "e": e, "x": x})
             self.entidades_enviadas = len(self.g.expuestas)
+
+    async def enviar_aviso(self, *, tipo: str, gravedad: str, titulo: str | None, mensaje: str | None,
+                           duracion: int) -> bool:
+        """Manda un aviso si este Kodi está conectado y su configuración no dice «nada» para esa gravedad."""
+        datos = L.aviso(ident=uuid.uuid4().hex[:8], tipo=tipo, gravedad=gravedad, titulo=titulo, mensaje=mensaje,
+                        duracion=duracion, accion=self.comportamiento.get(gravedad, "tarjeta"))
+        if datos is None:
+            return False
+        if self._ws is None or self._ws.closed:
+            _LOGGER.debug("%s: aviso sin enviar, no hay conexión", self.nombre)
+            return False
+        await self._enviar("aviso", datos)
+        return True

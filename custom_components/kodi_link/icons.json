@@ -1,0 +1,17 @@
+{
+  "entity": {
+    "notify": {
+      "avisos": {
+        "default": "mdi:message-badge"
+      },
+      "avisos_todos": {
+        "default": "mdi:message-badge-outline"
+      }
+    }
+  },
+  "services": {
+    "evento": {
+      "service": "mdi:message-alert"
+    }
+  }
+}

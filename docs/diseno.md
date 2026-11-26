@@ -204,6 +204,19 @@ Hay dos piezas, las dos de la integración y usables desde el editor visual de a
 `kodi.call_method` con `GUI.ShowNotification`). La migración concreta de cada instalación se documenta con esa
 instalación.
 
+**Hecho en 0.3.0 (26/11):**
+
+- Integración: una entidad `notify` por Kodi («Avisos») y otra para todos («Avisos a todos los Kodi»), y la acción
+  `kodi_link.evento` («Mandar un aviso») sobre esas entidades, con título, mensaje, tipo, gravedad y duración. En la
+  subentrada de cada Kodi se elige qué hace con cada gravedad: nada, tarjeta o tarjeta y pausa (por defecto: tarjeta,
+  tarjeta, y tarjeta y pausa para lo grave).
+- Addon: tarjeta arriba a la derecha (abajo van los subtítulos), con el icono del tipo en un bloque del color de la
+  gravedad. Probado en el Kodi de escritorio: **no se queda con el mando** (una tecla cierra la tarjeta y además hace
+  lo suyo: avanzar, pausar…), lo grave pausa y se queda hasta OK o Atrás, y **no quita el salvapantallas** (en las
+  casas con `cec_wake_screensaver`, quitarlo encendería la tele).
+- Pendiente: la foto de la cámara en el aviso, encender la tele por CEC para lo grave, y que el addon acuse cada
+  aviso para saber en HA que se ha visto.
+
 ## 9. Nombre y código compartido
 
 - **Nombre** (D7): `kodi-addon-ha-link`, con la integración `kodi_link`. Es el canal entre HA y Kodi (panel,
@@ -225,7 +238,7 @@ instalación.
    - En paralelo, **maquetas de la ventana propia (K2)** para validar la estética antes de programarla (D6).
 2. **Acciones:** nivel «Actúa», validación en HA y confirmación en Kodi para lo sensible.
 3. **Canal de notificaciones y eventos:** entidades `notify`, la acción de eventos, configuración compartida (§6) y
-   migración de lo actual.
+   migración de lo actual. **Hecho en 0.3.0** (§8).
 4. **Paneles en HA (4.2.2)** y la ventana propia (K2) según las maquetas aprobadas.
 5. **Edición rápida desde Kodi** (D6): desde el listado o el panel, añadir, quitar o mover una entidad, guardando el
    cambio en HA.

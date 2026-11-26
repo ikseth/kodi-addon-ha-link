@@ -158,3 +158,12 @@ def test_termostato_activo_solo_si_calienta():
     d = L.describir(entity_id="climate.salon", nombre="Calefacción", area_id="salon", area_nombre="Salón",
                     estado="heat", accion="idle")
     assert d["t"] == L.NORMAL
+
+
+def test_aviso_recorta_y_respeta_el_comportamiento():
+    a = L.aviso(ident="1", tipo="timbre", gravedad="importante", titulo="  Timbre ", mensaje="x" * 900, duracion=5000,
+                accion="tarjeta")
+    assert a["ti"] == "Timbre" and len(a["m"]) == L.MAX_MENSAJE_AVISO and a["d"] == 3600 and a["p"] == L.PROTOCOLO
+    assert L.aviso(ident="1", tipo="info", gravedad="aviso", titulo="T", mensaje="M", duracion=10, accion="nada") is None
+    assert L.aviso(ident="1", tipo="info", gravedad="aviso", titulo="", mensaje=" ", duracion=10,
+                   accion="tarjeta") is None
